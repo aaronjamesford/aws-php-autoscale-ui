@@ -1,9 +1,8 @@
 <?php
 
-$aws_creds = array(
-	array(
-	"key" => "YOUR_KEY_HERE",
-	"secret" => "YOUR_SECRET_HERE",
+$aws_credentials = array(
+	"key" => "YOUR_KEY",
+	"secret" => "YOUR_SECRET",
 	"region" => "eu-west-1",
 	"scheme" => "http"
 );
