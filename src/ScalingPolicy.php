@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Auto Scaling Groups &middot; Aaron Ford</title>
+    <title>Scaling Policies &middot; Aaron Ford</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -84,18 +84,19 @@
       <hr>
 
       <div class="container-narrow">
-        <h1>Auto Scaling Groups</h1>
+        <h1>Scaling Policies</h1>
         <p>
-        	Here you can see your current auto scaling groups as well as create a new group for use with AWS AutoScale.
+        	Here you can see your current scaling policies as well as create a new policy for use with AWS AutoScale.
         </p>
-        <table id="AutoScaleGroupTable" class="table">
+        <table id="PolicyTable" class="table">
         	<thead>
         		<tr>
         			<th>Name</th>
-        			<th>Launch Config</th>
-        			<th>Min Instances</th>
-        			<th>Max Instances</th>
-              <th>Delete</th>
+        			<th>AutoScaling Group</th>
+        			<th>Scaling Adjustment</th>
+              <th>Adjustment Type</th>
+              <th>Cooldown</th>
+        			<th>Delete</th>
         		</tr>
         	</thead>
         	<tbody>
@@ -103,7 +104,7 @@
         </table>
 
         <div class="container-narrow">
-          <a href="#createModal" role="button" class="btn btn-primary" data-toggle="modal">Create Group</a>
+          <a href="#createModal" role="button" class="btn btn-primary" data-toggle="modal">Create Policy</a>
         </div>
       </div>
 
@@ -118,21 +119,21 @@
     <div id="createModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Create Auto Scaling Group</h3>
+        <h3>Create Launch Configuration</h3>
       </div>
       <div class="modal-body">
-        <form id="AutoScalingGroupForm">
+        <form id="PolicyForm">
           <fieldset>
-            <label>AutoScale Group Name</label>
-            <input id="AutoScalingGroupName" type="text" placeholder="e.g. my-auto-scale-group">
-            <label>Launch Configuration Name</label>
-            <input id="LaunchConfigurationName" type="text" placeholder="e.g. my-launch-config">
-            <label>Minimum Instances</label>
-            <input id="MinSize" type="text" placeholder="e.g. 1">
-            <label>Maximum Instances</label>
-            <input id="MaxSize" type="text" placeholder="e.g. 10">
-            <label>Availability Zone(s)</label>
-            <input id="AvailabilityZones" type="text" placeholder="e.g. eu-west-1a+eu-west-1b">
+            <label>Scaling Policy Name</label>
+            <input id="PolicyName" type="text" placeholder="e.g. my-policy">
+            <label>Auto Scale Group Name</label>
+            <input id="AutoScalingGroupName" type="text" placeholder="e.g. my-scale-group">
+            <label>Scaling Adjustment</label>
+            <input id="ScalingAdjustment" type="text" placeholder="e.g. 1 or -1">
+            <label>Adjustment Type</label>
+            <input id="AdjustmentType" type="text" placeholder="e.g. ChangeInCapacity">
+            <label>Cooldown Period (Seconds)</label>
+            <input id="Cooldown" type="text" placeholder="e.g. 300 (5 minutes)">
           </fieldset>
         </form>
       </div>
@@ -153,9 +154,9 @@
 
     <script type="text/javascript">
       $( document ).ready( function( ) {
-        getAutoScalingGroups( );
+        getScalingPolicies( );
         $( "#CreateConfigBtn" ).click( function( ) {
-          putAutoScalingGroup( );
+          putScalingPolicy( );
           return false;
         } );
       } );

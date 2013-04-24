@@ -1,3 +1,6 @@
+var ARNSource = new Array( );
+var ARNMap = {};
+
 function getLaunchConfigurations( ) {
 	$.ajax( {
 		method : "GET",
@@ -76,6 +79,90 @@ function getAutoScalingGroups( ) {
 	} );
 }
 
+function getScalingPolicies( ) {
+	$.ajax( {
+		method : "GET",
+		url : "aws/Policy.php",
+		dataType : "json",
+		success : function( json ) {
+			$( "#PolicyTable tbody" ).html( "" );
+
+			var configs = json.ScalingPolicies;
+			if( configs != undefined && configs.length > 0 ) {
+				for( var i = 0; i < configs.length; ++i ) {
+					var row = $( "<tr></tr>" );
+					row.append( $( "<td></td>" ).html( configs[ i ].PolicyName ) );
+					row.append( $( "<td></td>" ).html( configs[ i ].AutoScalingGroupName ) );
+					row.append( $( "<td></td>" ).html( configs[ i ].ScalingAdjustment ) );
+					row.append( $( "<td></td>" ).html( configs[ i ].AdjustmentType ) );
+					row.append( $( "<td></td>" ).html( configs[ i ].Cooldown ) );
+					row.append( $( "<td></td>" ).html( "<a href=\"#\" role=\"button\" class=\"btn btn-danger delete-btn\" data-policyname=\"" 
+						+ configs[ i ].PolicyName + "\" data-autoscalename=\"" + configs[ i ].AutoScalingGroupName + "\" >Delete</a>" ) );
+
+					$( "#PolicyTable tbody" ).append( row );
+				}
+
+				$( ".delete-btn" ).click( function( ) {
+		          	deleteScalingPolicy( $( this ).data( "policyname" ), $( this ).data( "autoscalename" ) );
+		          	return false;
+		        } );
+			} else {
+				var row = $( "<tr></tr>" );
+
+				row.append( $( "<td></td>" ).html( "None" ) );
+				row.append( $( "<td></td>" ).html( "None" ) );
+				row.append( $( "<td></td>" ).html( "None" ) );
+				row.append( $( "<td></td>" ).html( "None" ) );
+				row.append( $( "<td></td>" ).html( "None" ) );
+				row.append( $( "<td></td>" ).html( "None" ) );
+
+				$( "#PolicyTable tbody" ).append( row );
+			}
+		}
+	} );
+}
+
+function getAlarmMetrics( ) {
+	$.ajax( {
+		method : "GET",
+		url : "aws/MetricAlarm.php",
+		dataType : "json",
+		success : function( json ) {
+			$( "#AlarmMetricTable tbody" ).html( "" );
+
+			var configs = json.MetricAlarms;
+			if( configs != undefined && configs.length > 0 ) {
+				for( var i = 0; i < configs.length; ++i ) {
+					var row = $( "<tr></tr>" );
+					row.append( $( "<td></td>" ).html( configs[ i ].AlarmName ) );
+					row.append( $( "<td></td>" ).html( configs[ i ].AlarmDescription ) );
+					row.append( $( "<td></td>" ).html( configs[ i ].MetricName ) );
+					row.append( $( "<td></td>" ).html( configs[ i ].StateValue ) );
+					row.append( $( "<td></td>" ).html( "<a href=\"#\" role=\"button\" class=\"btn btn-danger delete-btn\" data-alarmname=\"" 
+						+ configs[ i ].AlarmName + "\" >Delete</a>" ) );
+
+					$( "#AlarmMetricTable tbody" ).append( row );
+				}
+
+				$( ".delete-btn" ).click( function( ) {
+		          	deleteMetricAlarm( $( this ).data( "alarmname" ) );
+		          	return false;
+		        } );
+			} else {
+				var row = $( "<tr></tr>" );
+
+				row.append( $( "<td></td>" ).html( "None" ) );
+				row.append( $( "<td></td>" ).html( "None" ) );
+				row.append( $( "<td></td>" ).html( "None" ) );
+				row.append( $( "<td></td>" ).html( "None" ) );
+				row.append( $( "<td></td>" ).html( "None" ) );
+
+				$( "#AlarmMetricTable tbody" ).append( row );
+			}
+		}
+	} );
+}
+
 function inputsToJson( formID ) {
 	var jArr = {};
 
@@ -139,10 +226,121 @@ function putAutoScalingGroup( ) {
 		return false;
 	}
 
-	console.log( data );
 	$.ajax( {
 		method : "PUT",
 		url : "aws/AutoScalingGroup.php",
+		data : JSON.stringify( data ),
+		processData : false,
+		contentType : "application/json",
+		success : function( ) {
+			window.location.reload( true );
+		}
+	} );
+}
+
+function putScalingPolicy( ) {
+	var data = inputsToJson( "PolicyForm" );
+
+	if( data[ "AutoScalingGroupName" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "PolicyName" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "ScalingAdjustment" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "AdjustmentType" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	$.ajax( {
+		method : "PUT",
+		url : "aws/Policy.php",
+		data : JSON.stringify( data ),
+		processData : false,
+		contentType : "application/json",
+		success : function( ) {
+			window.location.reload( true );
+		}
+	} );
+}
+
+function putAlarmMetric( ) {
+	var data = inputsToJson( "AlarmMetricForm" );
+
+	if( data[ "AutoScalingGroupName" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "PolicyARN" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "AlarmName" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "MetricName" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "Namespace" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "Statistic" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "Period" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "EvaluationPeriods" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "Threshold" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "AlarmName" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "ComparisonOperator" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	if( data[ "Unit" ] == "" ) {
+		// alert it
+		return false;
+	}
+
+	console.log( data );
+
+	$.ajax( {
+		method : "PUT",
+		url : "aws/MetricAlarm.php",
 		data : JSON.stringify( data ),
 		processData : false,
 		contentType : "application/json",
@@ -168,6 +366,55 @@ function deleteAutoScalingGroup( groupName ) {
 		url : "aws/AutoScalingGroup.php?AutoScalingGroupName=" + groupName,
 		success : function( ) {
 			window.location.reload( true );
+		}
+	} );
+}
+
+function deleteScalingPolicy( policyName, groupName ) {
+	$.ajax( {
+		method : "DELETE",
+		url : "aws/Policy.php?PolicyName=" + policyName + "&AutoScalingGroupName=" + groupName,
+		success : function( ) {
+			window.location.reload( true );
+		}
+	} );
+}
+
+function deleteMetricAlarm( alarmName ) {
+	$.ajax( {
+		method : "DELETE",
+		url : "aws/MetricAlarm.php?AlarmName=" + alarmName,
+		success : function( ) {
+			window.location.reload( true );
+		}
+	} );
+}
+
+function setARNSource( ) {
+	$.ajax( {
+		method : "GET",
+		url : "aws/Policy.php",
+		dataType : "json",
+		success : function( json ) {
+			var configs = json.ScalingPolicies;
+			if( configs != undefined && configs.length > 0 ) {
+				ARNSource = new Array( );
+				ARNMap = {};
+				for( var i = 0; i < configs.length; ++i ) {
+					var key = configs[ i ].AutoScalingGroupName + "/" + configs[ i ].PolicyName;
+					ARNSource.push( key );
+					ARNMap[ key ] = configs[ i ].PolicyARN;
+				}
+
+				$( "#createModal" ).on( "shown", function( ) {
+					$( "#PolicyARN" ).typeahead( {
+						source : ARNSource,
+						updater : function( item ) {
+							return ARNMap[ item ];
+						}
+					} );
+				} );
+			}
 		}
 	} );
 }

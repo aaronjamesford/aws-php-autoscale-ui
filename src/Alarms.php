@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Auto Scaling Groups &middot; Aaron Ford</title>
+    <title>Metric Alarms &middot; Aaron Ford</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -84,18 +84,18 @@
       <hr>
 
       <div class="container-narrow">
-        <h1>Auto Scaling Groups</h1>
+        <h1>Metric Alarms</h1>
         <p>
-        	Here you can see your current auto scaling groups as well as create a new group for use with AWS AutoScale.
+        	Here you can see your current alarms as well as create a new alarm for use with AWS AutoScale.
         </p>
-        <table id="AutoScaleGroupTable" class="table">
+        <table id="AlarmMetricTable" class="table">
         	<thead>
         		<tr>
         			<th>Name</th>
-        			<th>Launch Config</th>
-        			<th>Min Instances</th>
-        			<th>Max Instances</th>
-              <th>Delete</th>
+        			<th>Description</th>
+        			<th>Metric</th>
+              <th>State</th>
+        			<th>Delete</th>
         		</tr>
         	</thead>
         	<tbody>
@@ -103,7 +103,7 @@
         </table>
 
         <div class="container-narrow">
-          <a href="#createModal" role="button" class="btn btn-primary" data-toggle="modal">Create Group</a>
+          <a href="#createModal" role="button" class="btn btn-primary" data-toggle="modal">Create Policy</a>
         </div>
       </div>
 
@@ -118,21 +118,36 @@
     <div id="createModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Create Auto Scaling Group</h3>
+        <h3>Create Launch Configuration</h3>
       </div>
-      <div class="modal-body">
-        <form id="AutoScalingGroupForm">
+      <div class="modal-body" style="position:relative">
+        <form id="AlarmMetricForm">
           <fieldset>
-            <label>AutoScale Group Name</label>
-            <input id="AutoScalingGroupName" type="text" placeholder="e.g. my-auto-scale-group">
-            <label>Launch Configuration Name</label>
-            <input id="LaunchConfigurationName" type="text" placeholder="e.g. my-launch-config">
-            <label>Minimum Instances</label>
-            <input id="MinSize" type="text" placeholder="e.g. 1">
-            <label>Maximum Instances</label>
-            <input id="MaxSize" type="text" placeholder="e.g. 10">
-            <label>Availability Zone(s)</label>
-            <input id="AvailabilityZones" type="text" placeholder="e.g. eu-west-1a+eu-west-1b">
+            <label>Alarm Name</label>
+            <input id="AlarmName" type="text" placeholder="e.g. my-alarm">
+            <label>Alarm Description</label>
+            <input id="AlarmDescription" type="text" placeholder="e.g. An alarm to react to...">
+            <label>Policy ARN</label>
+            <span class="help-block">You can start typing the policy name here.</span>
+            <input autocomplete="off" id="PolicyARN" type="text" placeholder="e.g. arn:aws...">
+            <label>Auto Scaling Group Name</label>
+            <input id="AutoScalingGroupName" type="text" placeholder="e.g. my-scale-group">
+            <label>Metric Name</label>
+            <input id="MetricName" type="text" placeholder="e.g. CPUUtilization">
+            <label>Statistic</label>
+            <input id="Statistic" type="text" placeholder="e.g. Average">
+            <label>Unit</label>
+            <input id="Unit" type="text" placeholder="e.g. Percent">
+            <label>Period (Seconds - 60 minumum)</label>
+            <input id="Period" type="text" placeholder="e.g. 60">
+            <label>EvaluationPeriods</label>
+            <input id="EvaluationPeriods" type="text" placeholder="e.g. 2">
+            <label>Threshold</label>
+            <input id="Threshold" type="text" placeholder="e.g. 50 (Percent)">
+            <label>Comparison Operator</label>
+            <input id="ComparisonOperator" type="text" placeholder="e.g. GreaterThanOrEqualToThreshold">
+            <label>Namespace</label>
+            <input id="Namespace" type="text" placeholder="e.g. AWS/EC2">
           </fieldset>
         </form>
       </div>
@@ -153,9 +168,10 @@
 
     <script type="text/javascript">
       $( document ).ready( function( ) {
-        getAutoScalingGroups( );
+        getAlarmMetrics( );
+        setARNSource( );
         $( "#CreateConfigBtn" ).click( function( ) {
-          putAutoScalingGroup( );
+          putAlarmMetric( );
           return false;
         } );
       } );

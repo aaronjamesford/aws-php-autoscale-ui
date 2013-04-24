@@ -67,11 +67,17 @@
     <div class="container-narrow">
 
       <div class="masthead">
-        <!--<ul class="nav nav-pills pull-right">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>-->
+        <ul class="nav nav-pills pull-right">
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="nav-drop" role="button" data-toggle="dropdown" href="#">Navigation <b class="caret"></b></a>
+            <ul id="nav-menu" class="dropdown-menu" role="menu" aria-labelledby="nav-drop">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="LaunchConfiguration.php">Launch Configs</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="AutoScaleGroup.php">AutoScale Groups</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="ScalingPolicy.php">Scaling Policies</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="Alarms.php">Alarms</a></li>
+            </ul>
+          </li>
+        </ul>
         <h3 class="muted">AWS AutoScale Configuration Helper</h3>
       </div>
 
