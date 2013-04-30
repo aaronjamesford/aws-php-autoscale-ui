@@ -1,5 +1,10 @@
 var ARNSource = new Array( );
 var ARNMap = {};
+var ComparisonOperators;
+var StatisticValues;
+var UnitValues;
+var AutoScalingGroups;
+var Metrics;
 
 function getLaunchConfigurations( ) {
 	$.ajax( {
@@ -406,15 +411,117 @@ function setARNSource( ) {
 					ARNMap[ key ] = configs[ i ].PolicyARN;
 				}
 
-				$( "#createModal" ).on( "shown", function( ) {
-					$( "#PolicyARN" ).typeahead( {
-						source : ARNSource,
-						updater : function( item ) {
-							return ARNMap[ item ];
-						}
-					} );
+				$( "#PolicyARN" ).typeahead( {
+					source : ARNSource,
+					updater : function( item ) {
+						return ARNMap[ item ];
+					}
 				} );
 			}
 		}
+	} );
+}
+
+function setComparisonOperators( ) {
+	ComparisonOperators = [
+		"GreaterThanOrEqualToThreshold",
+		"GreaterThanThreshold",
+		"LessThanOrEqualToThreshold",
+		"LessThanThreshold"
+	];
+
+	$( "#ComparisonOperator" ).typeahead( {
+		source : ComparisonOperators
+	} );
+}
+
+function setStatisticValues( ) {
+	StatisticValues = [
+		"Average",
+		"Maximum",
+		"Minumum",
+		"SampleCount",
+		"Sum"
+	];
+
+	$( "#Statistic" ).typeahead( {
+		source: StatisticValues
+	} );
+}
+
+function setUnitValues( ) {
+	UnitValues = [
+		"Seconds",
+		"Microseconds",
+		"Milliseconds",
+		"Bytes",
+		"Kilobytes",
+		"Megabytes",
+		"Gigabytes",
+		"Terabytes",
+		"Bits",
+		"Kilobits",
+		"Megabits",
+		"Gigabits",
+		"Terabits",
+		"Percent",
+		"Count",
+		"Bytes/Second",
+		"Kilobytes/Second",
+		"Megabytes/Second",
+		"Gigabytes/Second",
+		"Terabytes/Second",
+		"Bits/Second",
+		"Kilobits/Second",
+		"Megabits/Second",
+		"Gigabits/Second",
+		"Terabits/Second",
+		"Count/Second",
+		"None"
+	];
+
+	$( "#Unit" ).typeahead( {
+		source : UnitValues
+	} );
+}
+
+function setAutoScalingGroups( ) {
+	$.ajax( {
+		method : "GET",
+		url : "aws/AutoScalingGroup.php",
+		dataType : "json",
+		success : function( json ) {
+			var configs = json.AutoScalingGroups;
+			if( configs != undefined && configs.length > 0 ) {
+				AutoScalingGroups = new Array( );
+				for( var i = 0; i < configs.length; ++i ) {
+					var key = configs[ i ].AutoScalingGroupName;
+					ARNSource.push( key );
+				}
+
+				$( "#AutoScalingGroupName" ).typeahead( {
+					source : AutoScalingGroups
+				} );
+			}
+		}
+	} );
+}
+
+function setMetrics( ) {
+	Metrics = [
+		"CPUUtilization",
+		"DiskReadOps",
+		"DiskWriteOps",
+		"DiskReadBytes",
+		"DiskWriteBytes",
+		"NetworkOut",
+		"NetworkIn",
+		"StatusCheckFailed",
+		"StatusCheckFailed_Instance",
+		"StatusCheckFailed_System"
+	];
+
+	$( "#MetricName" ).typeahead( {
+		source : Metrics
 	} );
 }

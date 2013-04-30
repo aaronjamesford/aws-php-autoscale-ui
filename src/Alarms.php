@@ -102,10 +102,103 @@
         	</tbody>
         </table>
 
-        <div class="container-narrow">
-          <a href="#createModal" role="button" class="btn btn-primary" data-toggle="modal">Create Policy</a>
+        <div class="container-narrow" >
+          <div class="accordion" id="create-new">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle btn btn-success" data-toggle="collapse" data-parent="#create-new" href="#new-form">
+                  Create New Alarm
+                </a>
+              </div>
+              <div class="accordion-body collapse" id="new-form">
+                <div class="accordion-inner">
+                  <h2>New Alarm</h2>
+                  <p>
+                    This form provides the base components to create an alarm to automatically scale your applications based on metrics of one of your previously defined auto scaling groups.
+                  </p>
+                  <hr>
+                  <form class="form-horizontal" id="AlarmMetricForm">
+                    <div class="control-group">
+                      <label class="control-label" for="AlarmName">Alarm Name</label>
+                      <div class="controls">
+                        <input id="AlarmName" type="text" placeholder="e.g. my-alarm">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="AlarmDescription">Alarm Description</label>
+                      <div class="controls">
+                        <input id="AlarmDescription" type="text" placeholder="e.g. An alarm to react to...">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="PolicyARN">Policy ARN</label>
+                      <div class="controls">
+                        <input autocomplete="off" id="PolicyARN" type="text" placeholder="e.g. my-scale/my-policy">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="AutoScalingGroupName">Auto Scaling Group Name</label>
+                      <div class="controls">
+                        <input autocomplete="off" id="AutoScalingGroupName" type="text" placeholder="e.g. my-scale-group">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="MetricName">Metric Name</label>
+                      <div class="controls">
+                        <input autocomplete="off" id="MetricName" type="text" placeholder="e.g. CPUUtilization">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="Statistic">Statistic</label>
+                      <div class="controls">
+                        <input autocomplete="off" id="Statistic" type="text" placeholder="e.g. Average">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="Unit">Unit</label>
+                      <div class="controls">
+                        <input autocomplete="off" id="Unit" type="text" placeholder="e.g. Percent">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="Period">Period (Seconds - 60 minumum)</label>
+                      <div class="controls">
+                        <input id="Period" type="text" placeholder="e.g. 60">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="EvaluationPeriods">Evaluation Periods</label>
+                      <div class="controls">
+                        <input id="EvaluationPeriods" type="text" placeholder="e.g. 2">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="Threshold">Threshold</label>
+                      <div class="controls">
+                        <input id="Threshold" type="text" placeholder="e.g. 50 (Percent)">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="ComparisonOperator">Comparison Operator</label>
+                      <div class="controls">
+                        <input autocomplete="off" id="ComparisonOperator" type="text" placeholder="e.g. GreaterThanThreshold">
+                      </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="Namespace">Namespace</label>
+                      <div class="controls">
+                        <input id="Namespace" type="text" placeholder="e.g. AWS/EC2">
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button type="submit" id="CreateConfigBtn" class="btn btn-primary">Create</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
       <hr>
 
@@ -114,48 +207,6 @@
       </div>
 
     </div> <!-- /container -->
-
-    <div id="createModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Create Launch Configuration</h3>
-      </div>
-      <div class="modal-body" style="position:relative">
-        <form id="AlarmMetricForm">
-          <fieldset>
-            <label>Alarm Name</label>
-            <input id="AlarmName" type="text" placeholder="e.g. my-alarm">
-            <label>Alarm Description</label>
-            <input id="AlarmDescription" type="text" placeholder="e.g. An alarm to react to...">
-            <label>Policy ARN</label>
-            <span class="help-block">You can start typing the policy name here.</span>
-            <input autocomplete="off" id="PolicyARN" type="text" placeholder="e.g. arn:aws...">
-            <label>Auto Scaling Group Name</label>
-            <input id="AutoScalingGroupName" type="text" placeholder="e.g. my-scale-group">
-            <label>Metric Name</label>
-            <input id="MetricName" type="text" placeholder="e.g. CPUUtilization">
-            <label>Statistic</label>
-            <input id="Statistic" type="text" placeholder="e.g. Average">
-            <label>Unit</label>
-            <input id="Unit" type="text" placeholder="e.g. Percent">
-            <label>Period (Seconds - 60 minumum)</label>
-            <input id="Period" type="text" placeholder="e.g. 60">
-            <label>EvaluationPeriods</label>
-            <input id="EvaluationPeriods" type="text" placeholder="e.g. 2">
-            <label>Threshold</label>
-            <input id="Threshold" type="text" placeholder="e.g. 50 (Percent)">
-            <label>Comparison Operator</label>
-            <input id="ComparisonOperator" type="text" placeholder="e.g. GreaterThanOrEqualToThreshold">
-            <label>Namespace</label>
-            <input id="Namespace" type="text" placeholder="e.g. AWS/EC2">
-          </fieldset>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <a href="#" role="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
-        <a id="CreateConfigBtn" href="#" class="btn btn-primary">Create</a>
-      </div>
-    </div>
 
     <!-- Le javascript
     ================================================== -->
@@ -170,6 +221,11 @@
       $( document ).ready( function( ) {
         getAlarmMetrics( );
         setARNSource( );
+        setComparisonOperators( );
+        setStatisticValues( );
+        setUnitValues( );
+        setAutoScalingGroups( );
+        setMetrics( );
         $( "#CreateConfigBtn" ).click( function( ) {
           putAlarmMetric( );
           return false;
