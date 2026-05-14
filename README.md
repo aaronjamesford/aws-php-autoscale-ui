@@ -1,6 +1,8 @@
 aws-php-autoscale-ui
 ====================
 
+_This was originally a project from university. Time has moved on, but at the time there was no UI for autoscaling in AWS._
+
 A PHP and HTML interface to allow easy creation of AWS AutoScale environments.
 
 Usage
